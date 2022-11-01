@@ -32,6 +32,7 @@ const multiply = (operand1, operand2)=>{
   return operand1 * operand2;
 }
 const divide = (operand1, operand2)=>{
+  (operand1 === 1 && operand2 === 0)
   return operand1 / operand2;
 }
 
@@ -71,27 +72,27 @@ function handleButtonClick(event){
     case "number":
       if(operationType === "=") clear();
       displayValue += btn;
-      if(operand1 && operationType){
+      if(operand1!== null && operationType){
         operand2 += +btn
       }
       break;
     case "operation":
       if(btn === 'clear') clear();
       else if(btn === 'equal'){
-        if(operand1 && operand2 && operationType){
+        if(operand1 !== null && operand2 !== null && operationType){
         displayValue = operate(operationType,operand1,operand2)
         operationType = "="
         operand1 = displayValue;
         operand2 = null;
         }
       }
-      else if (operand1 && operand2 && operationType){
+      else if (operand1 !== null && operand2 !== null && operationType){
         operand1 = operate(operationType,operand1,operand2 )
         operand2 = null;
         operationType = btn;
         displayValue = operand1 + " " + signs[btn] + " ";
       }
-      else if(operand1 && operationType && !operand2){
+      else if(operand1 !== null && operationType && operand2 === null){
         operationType = btn;
         displayValue = operand1 + " " + signs[btn] + " ";
       }
@@ -107,6 +108,8 @@ function handleButtonClick(event){
       }
       break;
   }
+
+  if(displayValue === Infinity || operand1 === Infinity) clear();
 
   updateScreen()
   
