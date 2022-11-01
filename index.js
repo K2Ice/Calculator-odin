@@ -19,21 +19,16 @@ let operand1 = null;
 let operand2 = null;
 
 const add = (operand1, operand2)=>{
-  //prevent from adding two strings
-  operand1 = +operand1;
-  operand2 = +operand2;
-
-  return operand1 + operand2;
+  return +operand1 + +operand2;
 }
 const subtract = (operand1, operand2)=>{
-  return operand1 - operand2;
+  return +operand1 - +operand2;
 }
 const multiply = (operand1, operand2)=>{
-  return operand1 * operand2;
+  return +operand1 * +operand2;
 }
 const divide = (operand1, operand2)=>{
-  (operand1 === 1 && operand2 === 0)
-  return operand1 / operand2;
+  return +operand1 / +operand2;
 }
 
 const operate = (type, operand1, operand2) =>{
@@ -51,7 +46,19 @@ const operate = (type, operand1, operand2) =>{
   }
 }
 
-function updateScreen(){
+function handleFormatOfNumber(number){
+  if(number % 1 !== 0){
+    let value = number.toString()
+    const periodIndex = value.indexOf('.');
+    if((value.length - periodIndex >= 3) && (value[value.length-2] === value[value.length-3])){
+      number = number.toFixed(4)
+    }
+    return +number;
+  }
+  return number;
+}
+
+function updateScreen(){  
   display.textContent = displayValue;
 }
 
@@ -66,28 +73,29 @@ function handleButtonClick(event){
   const {btn} = event.target.dataset;
   const type = isNaN(+btn) ? "operation" : "number";
 
-  console.log(type)
-
   switch (type){
     case "number":
       if(operationType === "=") clear();
       displayValue += btn;
       if(operand1!== null && operationType){
-        operand2 += +btn
+        operand2 === null ? operand2 = btn : operand2 += btn
       }
       break;
+
     case "operation":
       if(btn === 'clear') clear();
       else if(btn === 'equal'){
         if(operand1 !== null && operand2 !== null && operationType){
-        displayValue = operate(operationType,operand1,operand2)
+        const result = operate(operationType,operand1,operand2);
+        displayValue = handleFormatOfNumber(result)
         operationType = "="
-        operand1 = displayValue;
+        operand1 = handleFormatOfNumber(result);
         operand2 = null;
         }
       }
       else if (operand1 !== null && operand2 !== null && operationType){
-        operand1 = operate(operationType,operand1,operand2 )
+        const result = operate(operationType,operand1,operand2);
+        operand1 = handleFormatOfNumber(result);
         operand2 = null;
         operationType = btn;
         displayValue = operand1 + " " + signs[btn] + " ";
@@ -98,6 +106,7 @@ function handleButtonClick(event){
       }
       else if(operand1 === null && displayValue === "") return;
       else if(!operand1 && !operationType) {
+        /*Before operand1 is set, the value is stored in displayValue. Click the sign sets the operand1 value*/
         operationType = btn;
         operand1 = +displayValue
         displayValue += " " + signs[btn] + " ";
@@ -109,7 +118,11 @@ function handleButtonClick(event){
       break;
   }
 
-  if(displayValue === Infinity || operand1 === Infinity) clear();
+  if(displayValue === Infinity || operand1 === Infinity){
+    alert("Divide by 0 is not allowed.\nThat's probably a misclick.\n\nTry to avoid it in future :) ")
+    clear();
+  } 
+
 
   updateScreen()
   
