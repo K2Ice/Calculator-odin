@@ -93,8 +93,11 @@ function clear(){
 }
 
 function handleButtonClick(event){
-
   let {btn} = event.target.dataset;
+  handleButton(btn)
+}
+
+function handleButton(btn){
 
   const type = isNaN(+btn) ? "operation" : "number";
 
@@ -196,3 +199,50 @@ function handleButtonClick(event){
 }
 
 buttons.forEach(btn=> btn.addEventListener('click', handleButtonClick));
+
+
+const possibleKeys=[
+'0',
+'1',
+'2',
+'3',
+'4',
+'5',
+'6',
+'7',
+'8',
+'9',
+'+',
+'=',
+'-',
+'/',
+'*',
+'.',
+'Backspace',
+'Enter']
+
+function handleButtonPress(e){
+  let key = e.key
+
+ if(!possibleKeys.includes(key)) return
+
+ const funKeys = {
+  '+' : 'add',
+  '-' : 'subtract',
+  '*' : "multiply",
+  '/' : "divide",
+  '=' : "equal",
+  'Enter' : "equal",
+  'Backspace' : "undo",
+  '.' : "00"
+ }
+
+ funKeys[key] ? key = funKeys[key] : null
+
+ handleButton(key)
+
+}
+
+window.addEventListener('keydown', handleButtonPress)
+
+
