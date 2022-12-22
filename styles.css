@@ -40,11 +40,9 @@ body{
   align-items: center;
   padding-right: 5px;
   border: 1px solid white;
-  /* background-color: #488248; */
   background-color: #93c658;
   color: black;
   font-size: 20px;
-  font-size: 18px;
 }
 
 button[data-role]{

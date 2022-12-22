@@ -93,18 +93,19 @@ function clear(){
 }
 
 function handleButtonClick(event){
+
   let {btn} = event.target.dataset;
+
   const type = isNaN(+btn) ? "operation" : "number";
+
   btn = btn === "00" ? "." : btn;
-//To skończyłem, jeszcze została mi do napisania instrukcja obslugąja '.' w operandzie 1 i operandzie 2 
+
   switch (type){
     case "number":
-
-    //Prevent before multi zeros
-
-    if(operand1 !== null && operationType && operand2 === "0" && btn === "0") return;
-    if(operand1 === "0" && operationType === "" && operand2 === null && btn === "0") return;
-
+      //Prevent before multi zeros
+      if(operand1 !== null && operationType && operand2 === "0" && btn === "0") return;
+      
+      if(operand1 === "0" && operationType === "" && operand2 === null && btn === "0") return;
 
       if(operationType === "=") clear();
 
@@ -120,25 +121,32 @@ function handleButtonClick(event){
         else{
            displayValue += btn; 
            (operand2 === null || operand2 === "0") ? operand2 = btn : operand2 += btn;
-
         }
       }
-      break;
+    break;
 
     case "operation":
       if(btn === 'clear'){
         clear();
       } 
+
+      //Prevent from clicking functional button without setting first operand
+      else if(operand1 === null && displayValue === "") return;
+      
       else if(btn === 'undo'){
+
         displayValue = String(displayValue).replace(/(\d|\.|\s.\s)$/g, "")
+
         if(operand1 !== null && operationType !== "" && operand2 !== null && operand2 !== ""){
           operand2 = operand2.slice(0,operand2.length-1);
-        } else if(operand1 !== null && operationType !== "" && operationType !== "=") operationType = "";
+        } 
+        else if(operand1 !== null && operationType !== "" && operationType !== "=") operationType = "";
+        
         else if(operand1 !== null && operand1 !== "") {
-          console.log('indo')
           operand1 = String(operand1).replace(/(\d|\.)$/g, "")
         } 
       }
+
       else if(btn === 'equal'){
         if(operand1 !== null && operand2 !== null && operationType){
         const result = operate(operationType,operand1,operand2);
@@ -148,6 +156,7 @@ function handleButtonClick(event){
         operand2 = null;
         }
       }
+
       //All both numbers are set and client click function button
       else if (operand1 !== null && operand2 !== null && operationType){
         const result = operate(operationType,operand1,operand2);
@@ -156,15 +165,12 @@ function handleButtonClick(event){
         operationType = btn;
         displayValue = operand1 + " " + signs[btn] + " ";
       }
+
       //When operand2 is not set, click on operation button change the operation
       else if(operand1 !== null && operationType && operand2 === null){
         operationType = btn;
         displayValue = operand1 + " " + signs[btn] + " ";
       }
-
-      //Prevent from clicking functional button without setting first operand
-      else if(operand1 === null && displayValue === "") return;
-
 
       //Setting operation type when first operand is set
       else if(!operationType) {
@@ -172,13 +178,13 @@ function handleButtonClick(event){
         operand1 = +operand1
         displayValue = operand1 + " " + signs[btn] + " ";
       }
+
       //Changing the operation type
       else{
-        console.log('in')
         operationType = btn;
         displayValue = +operand1 + " " + signs[btn] + " ";
       }
-      break;
+    break;
   }
 
   if(displayValue === Infinity || operand1 === Infinity){
@@ -186,9 +192,7 @@ function handleButtonClick(event){
     clear();
   } 
 
-
-  updateScreen()
-  
+  updateScreen()  
 }
 
 buttons.forEach(btn=> btn.addEventListener('click', handleButtonClick));
